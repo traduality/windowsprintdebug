@@ -3,7 +3,7 @@ package windowsprintdebug
 import (
 	"errors"
 	"github.com/stretchr/testify/require"
-	"github.com/traduality/Traduality/lib/windowsprintdebug/debugger"
+	"github.com/traduality/windowsprintdebug/debugger"
 	"os"
 	"os/exec"
 	"path/filepath"

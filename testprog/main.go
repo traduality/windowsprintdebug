@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/traduality/Traduality/lib/windowsprintdebug"
+	"github.com/traduality/windowsprintdebug"
 	"log"
 	"log/slog"
 	"os"

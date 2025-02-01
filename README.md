@@ -23,3 +23,8 @@ applications.
 Operating systems: Windows 11
 
 Architectures: ARM64, x64
+
+## License
+
+Windows Print Debug by Traduality Language Solutions, Inc. is marked with CC0
+1.0 Universal. To view a copy of this license, see [LICENSE.txt](./LICENSE.txt).

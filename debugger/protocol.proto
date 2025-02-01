@@ -1,0 +1,22 @@
+syntax = "proto3";
+package protocol;
+option go_package = "github.com/traduality/Traduality/lib/windowsprintdebug/debugger";
+option optimize_for = LITE_RUNTIME;
+
+message Protocol {
+  repeated ProtocolMessage messages = 1;
+  optional ProtocolProcessExit processExit = 2;
+}
+
+message ProtocolMessage {
+  optional ProtocolMessageOutputDebugString outputDebugString = 1;
+}
+
+message ProtocolMessageOutputDebugString {
+  optional bytes data = 1;
+  optional bool isUnicode = 2;
+}
+
+message ProtocolProcessExit {
+  optional uint32 exitCode = 1;
+}

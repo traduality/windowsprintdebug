@@ -11,6 +11,9 @@
 
 // func DebugWrite(fd uintptr, p unsafe.Pointer, n int32) int32
 TEXT ·DebugWrite(SB),NOSPLIT,$40-20
+        // Stack layout:
+        // arg-0x28(SP) *Closure     // 0x08 bytes
+        // closure-0x20(SP) Closure  // 0x20 bytes
 #define TEMP_closure(offset) closure-(0x20-offset)(SP)
         MOVD $·debugWriteOnSystemStackTrampoline(SB), R0
         MOVD R0, TEMP_closure(0x00)  // closure.f
@@ -22,7 +25,7 @@ TEXT ·DebugWrite(SB),NOSPLIT,$40-20
         MOVW R0, TEMP_closure(0x18)  // closure.n
 
         MOVD $TEMP_closure(0), R0
-        MOVD R0, 8(RSP)              // f = &closure
+        MOVD R0, arg-0x28(SP)        // f = &closure
 	CALL runtime·systemstack(SB)
 
         MOVW TEMP_closure(0x1c), R0  // closure.result
@@ -40,11 +43,11 @@ TEXT ·debugWriteOnSystemStackTrampoline(SB),NOSPLIT,$32-0
         MOVD R26, closure-0(SP)
 
         MOVD 0x08(R26), R0                 // closure.fd
-        MOVD R0, 8(RSP)
+        MOVD R0, arg_fd-32(SP)
         MOVD 0x10(R26), R0                 // closure.p
-        MOVD R0, 16(RSP)
+        MOVD R0, arg_p-24(SP)
         MOVW 0x18(R26), R0                 // closure.n
-        MOVW R0, 24(RSP)
+        MOVW R0, arg_n-16(SP)
         CALL ·debugWriteOnSystemStack(SB)  // Clobbers R26.
         MOVD closure-0(SP), R26
         MOVD R0, 0x1c(R26)                 // closure.bytesWritten

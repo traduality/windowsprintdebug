@@ -11,6 +11,9 @@
 
 // func DebugWrite(fd uintptr, p unsafe.Pointer, n int32) int32
 TEXT ·DebugWrite(SB),NOSPLIT,$40-20
+        // Stack layout:
+        // arg-0x28(SP) *Closure     // 0x08 bytes
+        // closure-0x20(SP) Closure  // 0x20 bytes
 #define TEMP_closure(offset) closure-(0x20-offset)(SP)
         MOVQ $·debugWriteOnSystemStackTrampoline(SB), AX
         MOVQ AX, TEMP_closure(0x00)  // closure.f
@@ -22,7 +25,7 @@ TEXT ·DebugWrite(SB),NOSPLIT,$40-20
         MOVL AX, TEMP_closure(0x18)  // closure.n
 
         MOVQ $TEMP_closure(0), AX
-        MOVQ AX, 0(SP)               // f = &closure
+        MOVQ AX, arg-0x28(SP)        // f = &closure
 	CALL runtime·systemstack(SB)
 
         MOVQ TEMP_closure(0x1c), AX  // closure.result
@@ -40,11 +43,11 @@ TEXT ·debugWriteOnSystemStackTrampoline(SB),NOSPLIT,$32-0
         MOVQ DX, closure-0(SP)
 
         MOVQ 0x08(DX), AX                  // closure.fd
-        MOVQ AX, 0(SP)
+        MOVQ AX, arg_fd-32(SP)
         MOVQ 0x10(DX), AX                  // closure.p
-        MOVQ AX, 8(SP)
+        MOVQ AX, arg_p-24(SP)
         MOVL 0x18(DX), AX                  // closure.n
-        MOVL AX, 16(SP)
+        MOVL AX, arg_n-16(SP)
         CALL ·debugWriteOnSystemStack(SB)  // Clobbers DX.
         MOVQ closure-0(SP), DX
         MOVL AX, 0x1c(DX)                  // closure.bytesWritten
